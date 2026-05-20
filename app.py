@@ -6,7 +6,7 @@ from generator import SECTIONS, generate_section
 from pdf_builder import create_pdf
 from docx_builder import create_docx
 
-load_dotenv()
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
 
 st.set_page_config(page_title="Générateur de PFA", page_icon="🎓", layout="wide")
 
