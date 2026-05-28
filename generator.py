@@ -8,52 +8,72 @@ SECTIONS = [
     {
         "id": "resume_fr",
         "title": "Résumé en français",
-        "prompt": "Génère le résumé en français du rapport."
+        "prompt": "Génère le résumé en français du rapport.",
+        "tooltip": "Un court paragraphe (150–250 mots) résumant l'objectif, la méthode et les principaux résultats du projet.",
+        "min_words": 150
     },
     {
         "id": "resume_ar",
         "title": "Résumé en arabe",
-        "prompt": "Génère le résumé en arabe du rapport. Assure-toi que la langue est correcte et professionnelle."
+        "prompt": "Génère le résumé en arabe du rapport. Assure-toi que la langue est correcte et professionnelle.",
+        "tooltip": "ملخص قصير (150–250 كلمة) يصف هدف المشروع، المنهجية المتبعة، والنتائج الرئيسية باللغة العربية الفصحى.",
+        "min_words": 150
     },
     {
         "id": "resume_en",
         "title": "Résumé en anglais",
-        "prompt": "Génère l'abstract (résumé en anglais) du rapport."
+        "prompt": "Génère l'abstract (résumé en anglais) du rapport. CETTE SECTION DOIT ÊTRE RÉDIGÉE INTÉGRALEMENT EN ANGLAIS (WRITE ENTIRELY IN ENGLISH).",
+        "tooltip": "An abstract (150–250 words) summarizing the project's objective, methodology, and key results in English.",
+        "min_words": 150
     },
     {
         "id": "remerciements",
         "title": "Remerciements",
-        "prompt": "Génère une page de remerciements formelle pour un rapport de PFA."
+        "prompt": "Génère une page de remerciements formelle pour un rapport de PFA.",
+        "tooltip": "Remerciements formels adressés à l'encadrant, aux enseignants et à l'entreprise. Soyez sincère et professionnel (100–200 mots).",
+        "min_words": 100
     },
     {
         "id": "intro_generale",
         "title": "Introduction générale",
-        "prompt": "Génère l'introduction détaillée du rapport incluant le contexte."
+        "prompt": "Génère l'introduction détaillée du rapport incluant le contexte.",
+        "tooltip": "Présente le contexte général, la problématique, les objectifs du projet et le plan du rapport. Doit faire 300–500 mots.",
+        "min_words": 300
     },
     {
         "id": "chapitre_1",
         "title": "Chapitre 1 : Présentation de l'entreprise",
-        "prompt": "Génère le Chapitre 1 complet, portant sur la présentation de l'entreprise d'accueil."
+        "prompt": "Génère le Chapitre 1 complet, portant sur la présentation de l'entreprise d'accueil.",
+        "tooltip": "Décrit l'entreprise d'accueil : secteur, activités, organigramme, missions du stage. Attendu : 400–700 mots.",
+        "min_words": 400
     },
     {
         "id": "chapitre_2",
         "title": "Chapitre 2 : Problématique, méthode et outils",
-        "prompt": "Génère le Chapitre 2 complet, détaillant la problématique, la méthode de travail adoptée, et les outils utilisés."
+        "prompt": "Génère le Chapitre 2 complet, détaillant la problématique, la méthode de travail adoptée, et les outils utilisés.",
+        "tooltip": "Analyse la problématique, justifie les choix méthodologiques (ex: Agile, Scrum) et présente l'environnement technologique. Attendu : 500–800 mots.",
+        "min_words": 500
     },
     {
         "id": "chapitre_3",
         "title": "Chapitre 3 : Modélisation et réalisation",
-        "prompt": "Génère le Chapitre 3 complet, détaillant la modélisation (diagrammes UML ou autres) et la réalisation (développement, architecture)."
+        "prompt": "Génère le Chapitre 3 complet, détaillant la modélisation (diagrammes UML ou autres) et la réalisation (développement, architecture).",
+        "tooltip": "Présente la conception (diagrammes UML, architecture) et la réalisation (interfaces, fonctionnalités développées). C'est le chapitre le plus important. Attendu : 700–1200 mots.",
+        "min_words": 700
     },
     {
         "id": "conclusion",
         "title": "Conclusion générale",
-        "prompt": "Génère la conclusion générale du rapport et les perspectives."
+        "prompt": "Génère la conclusion générale du rapport et les perspectives.",
+        "tooltip": "Synthèse des travaux réalisés, bilan des objectifs atteints et ouverture sur des perspectives futures. Attendu : 200–400 mots.",
+        "min_words": 200
     },
     {
         "id": "bibliographie",
         "title": "Bibliographie",
-        "prompt": "Génère une bibliographie plausible basée sur les technologies et le sujet. Utilise le format APA. Uniquement les références."
+        "prompt": "Génère une bibliographie plausible basée sur les technologies et le sujet. Utilise le format APA. Uniquement les références.",
+        "tooltip": "Liste des références bibliographiques en format APA. Incluez livres, articles, sites officiels et documentations techniques utilisées.",
+        "min_words": 50
     }
 ]
 
@@ -89,6 +109,12 @@ Informations sur le projet :
     )
 
     prompt = context_str + "\n\nDemande:\n" + section['prompt']
+
+    # Append user custom instructions if provided
+    custom_instruction = context_inputs.get('custom_instruction', '').strip()
+    if custom_instruction:
+        prompt += f"\n\nInstructions supplémentaires de l'utilisateur pour cette section:\n{custom_instruction}"
+
 
     try:
         response = client.chat.completions.create(

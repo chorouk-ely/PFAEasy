@@ -6,7 +6,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
 from reportlab.lib.units import cm
 
-def create_pdf(title, student_name, university, company, specialty, supervisor, academic_year, logo_path, sections_dict, section_options, selected_ids, output_path):
+def create_pdf(title, student_name, university, company, specialty, supervisor, academic_year, logo_univ, logo_comp, sections_dict, section_options, selected_ids, output_path):
     doc = SimpleDocTemplate(
         output_path,
         pagesize=A4,
@@ -80,13 +80,31 @@ def create_pdf(title, student_name, university, company, specialty, supervisor, 
     Story = []
     
     # --- PAGE DE GARDE ---
-    if logo_path and os.path.exists(logo_path):
-        try:
-            im = Image(logo_path, width=4*cm, height=4*cm)
-            Story.append(im)
-            Story.append(Spacer(1, 1*cm))
-        except Exception:
-            pass
+    # Logos layout: School on Left, Company on Right
+    from reportlab.platypus import Table, TableStyle
+    from reportlab.lib import colors
+
+    logo_data = []
+    l_univ = None
+    l_comp = None
+
+    if logo_univ and os.path.exists(logo_univ):
+        try: l_univ = Image(logo_univ, width=3*cm, height=3*cm)
+        except: pass
+    if logo_comp and os.path.exists(logo_comp):
+        try: l_comp = Image(logo_comp, width=3*cm, height=3*cm)
+        except: pass
+
+    if l_univ or l_comp:
+        logo_row = [l_univ or "", "", l_comp or ""]
+        table = Table([logo_row], colWidths=[4*cm, 8.5*cm, 4*cm])
+        table.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (0, 0), 'LEFT'),
+            ('ALIGN', (2, 0), (2, 0), 'RIGHT'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ]))
+        Story.append(table)
+        Story.append(Spacer(1, 1*cm))
             
     if university:
         Story.append(Paragraph(f"<b>{university}</b>", center_style))

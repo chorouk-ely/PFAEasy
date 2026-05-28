@@ -4,18 +4,34 @@ from docx import Document
 from docx.shared import Pt, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 
-def create_docx(title, student_name, university, company, specialty, supervisor, academic_year, logo_path, sections_dict, section_options, selected_ids, output_path):
+def create_docx(title, student_name, university, company, specialty, supervisor, academic_year, logo_univ, logo_comp, sections_dict, section_options, selected_ids, output_path):
     doc = Document()
     
-    # Simple Title Page
-    if logo_path and os.path.exists(logo_path):
+    # Logos Table: School on Left, Company on Right
+    table = doc.add_table(rows=1, cols=3)
+    table.columns[0].width = Inches(1.5)
+    table.columns[1].width = Inches(3.0)
+    table.columns[2].width = Inches(1.5)
+    
+    cells = table.rows[0].cells
+    
+    if logo_univ and os.path.exists(logo_univ):
         try:
-            doc.add_picture(logo_path, width=Inches(1.5))
-            last_paragraph = doc.paragraphs[-1]
-            last_paragraph.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        except Exception:
-            pass
+            p = cells[0].paragraphs[0]
+            r = p.add_run()
+            r.add_picture(logo_univ, width=Inches(1.2))
+        except: pass
+        
+    if logo_comp and os.path.exists(logo_comp):
+        try:
+            p = cells[2].paragraphs[0]
+            p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            r = p.add_run()
+            r.add_picture(logo_comp, width=Inches(1.2))
+        except: pass
 
+    doc.add_paragraph() # Spacer after logos
+    
     if university:
         p = doc.add_paragraph()
         run = p.add_run(university)
